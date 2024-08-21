@@ -10,7 +10,6 @@ export const signUp =asyncHandler (
 async(req,res,next)=>{
 
     const {name,email,password,cPassword,phoneNumber}=req.body
-    console.log({name,email,password,cPassword,phoneNumber});
 
     const checkUser =  await userModel.findOne({email})
     if(checkUser){
@@ -53,7 +52,6 @@ export const login =asyncHandler(
 async(req,res,next)=>{
 
     const {email,password}=req.body
-    console.log({email,password});
     const checkUser =  await userModel.findOne({email})
     if(!checkUser){
         res.status(409) 
@@ -68,7 +66,6 @@ async(req,res,next)=>{
         return next(new Error('In-valid Password' , {cause:400}))
 
     }
-    console.log(process.env.TOKEN_SIGNATURE)
     const token = generateToken({
         payload : {id : checkUser._id , name :checkUser.name,email:checkUser.email},
         signature: process.env.TOKEN_SIGNATURE,
