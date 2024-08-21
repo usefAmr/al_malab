@@ -4,29 +4,7 @@ import { asyncHandler } from '../../../utils/errorHandling.js';
 import {generateToken,verifyToken } from '../../../utils/generate&verifyToken.js';
 import { compare, hash } from '../../../utils/hash&compare.js';
 import generator from 'generate-password';
-import nodemailer from"nodemailer";
 import {sendEmail} from '../../../utils/sendEmail.js'
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "usef.amr5240@gmail.com",
-      pass: "jxzg ccaw gjtk wmqn",
-    },
-  });
-
-async function sendmail(email,subject,html) {
-    const info = await transporter.sendMail({
-      from: {address: "usef.amr5240@gmail.com"}, // sender address
-      to: email, // list of receivers
-      subject: subject, // Subject line
-      html: html,
-    //   context: {${randomPassword}} // html body
-    });
-  }
 
 export const signUp =asyncHandler (
 async(req,res,next)=>{
@@ -51,9 +29,7 @@ async(req,res,next)=>{
     const rfToken = generateToken({ payload:  {email} , expiresIn: 60 * 60 * 24 * 30 })
     const rfLink = `http://localhost:5000/requestNewEmail/${rfToken}`
 
-    const html = `<a href= "${link}">Click me to confirm your email</a> <br>`
-    const subject = "confirmation email"
-    sendmail(email,subject,html)
+    await sendEmail({to : email ,  subject:"confirmation email",text: `Email is Sent`,html:`<a href= "${link}">Click me to confirm your email</a> <br>`})
     
     const user =  await userModel.create({name,email,password:hashPassword,phoneNumber})
     return res.status(201).json({message : "Done",user : user._id})
@@ -71,7 +47,7 @@ export const confirmEmail = asyncHandler( async (req, res, next) => {
         { $set: { ConfirmEmail: true } }
       );
     return res.status (200).json({ message: "Done",  })
-    })
+})
 
 export const login =asyncHandler(
 async(req,res,next)=>{
@@ -109,15 +85,12 @@ export const forgetPassword = asyncHandler( async(req,res)=>{
         length: 10,
         numbers: true,
         symbols : true , exclude : `"`});
-
     try {
         if(!req.body.email)
         {
             return  res.send('Email is Required')
         }
         const {email}= req.body;
-        const subject = "Reset password ✔"
-
         const checkUser =  await userModel.findOne({email})
         if(!checkUser){
             return res.json({message : "Email not Exist"})
@@ -125,13 +98,9 @@ export const forgetPassword = asyncHandler( async(req,res)=>{
         const hashPassword = hash({
             plainText :randomPassword
         })
-        await userModel.updateOne(
-            { email: email },
-            { $set: { password: hashPassword } }
-          );
-          const html = `<b>Your new password is: ${randomPassword}</b>`
+        await userModel.findOneAndUpdate({email},{password : hashPassword})
 
-        sendEmail(email ,subject,html)
+        await sendEmail({to : email ,  subject: "Reset password ✔",text: `Password is Sent`,html: `<b>Your new password is: ${randomPassword}</b>`})
         return res.json({message: 'Password sent successfully'})
         }
     catch (error) {
