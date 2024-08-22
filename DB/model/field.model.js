@@ -3,7 +3,8 @@ import {Schema , model} from "mongoose"
 const fieldSchema = new Schema ({
     number : {
         type:Number,
-        required : true
+        required : true,
+        unique: true
     },
 },{
     timestamps : true
