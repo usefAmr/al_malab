@@ -1,7 +1,7 @@
 import {Schema , model} from "mongoose"
 
 const bookingSchema = new Schema ({
-    userId: {
+    id: {
         type: Schema.Types.ObjectId,
         ref: 'userModel',
         required: true
@@ -24,7 +24,7 @@ const bookingSchema = new Schema ({
     timestamps : true
 })
 
-const teamModel = model('team',teamSchema)
+const bookingModel = model('bookings',bookingSchema)
 
-export default teamModel
+export default bookingModel
 
