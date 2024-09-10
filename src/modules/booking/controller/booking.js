@@ -1,10 +1,6 @@
 import bookingModel from "../../../../DB/model/booking.model.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 
-
-
-
-
 // GET ALL bookings
 export const getAllbookings = asyncHandler(async (req, res, next) => {
   const bookings = await bookingModel.find();
@@ -35,7 +31,7 @@ export const addBooking = asyncHandler(async (req, res, next) => {
 })
 
 
-// DELETE field
+// DELETE booking
 export const deleteBooking = asyncHandler(async (req, res, next) => {
     const { id } = req.body;
     const booking = await bookingModel.findOneAndDelete({ _id: id});

@@ -10,6 +10,11 @@ const teamSchema = new Schema ({
     toHour: {
         type: Number
     },
+    user_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'userModel',
+        required: true
+    },
 },{
     timestamps : true
 })
