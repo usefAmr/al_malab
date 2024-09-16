@@ -10,7 +10,8 @@ export const getAllbookings = asyncHandler(async (req, res, next) => {
 // add booking
 export const addBooking = asyncHandler(async (req, res, next) => {
   const {fieldId,Date,fromHour,toHour}= req.body
-  const {id}=req.user
+  const {id,ConfirmEmail,blocked}=req.user
+  const user_id=id
   const checkBookings = await bookingModel.find({
     Date: Date,
     fieldId:fieldId,
@@ -19,14 +20,13 @@ export const addBooking = asyncHandler(async (req, res, next) => {
         { toHour: { $lte: toHour } }
     ]
 });
-  console.log(checkBookings)
-    if(checkBookings.length===0){
-      const booking =  await bookingModel.create({fieldId,Date,fromHour,toHour,id})
-      res.json({ message: "Done", booking })
-    }
-    else {
-      res.json({ message: "There is a booking in this field"})
-    }
+  if(checkBookings.length===0 && ConfirmEmail===true &&blocked===false){
+    const booking =  await bookingModel.create({fieldId,Date,fromHour,toHour,user_id})
+    res.json({ message: "Done", booking })
+  }
+  else {
+    res.json({ message: "There is a booking in this field"})
+  }
   
 })
 

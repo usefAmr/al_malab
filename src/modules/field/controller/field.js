@@ -12,8 +12,8 @@ export const getAllFields = asyncHandler(async (req, res, next) => {
 
 // add field
 export const addField = asyncHandler(async (req, res, next) => {
-  const {number}= req.body
-  const field =  await fieldModel.create({number})
+  const {number,price}= req.body
+  const field =  await fieldModel.create({number,price})
   res.json({ message: "Done", field })
 })
 

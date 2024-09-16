@@ -10,7 +10,6 @@ export const auth =asyncHandler( async (req, res, next) => {
            return next(new Error("Token is required"));
         }
         const decodded = verifyToken({ token, signature: process.env.TOKEN_SIGNATURE });
-        console.log(decodded)
         
         if (!decodded?.id ) {
            return next (new Error("IN-Valid Token Payload"));

@@ -8,6 +8,7 @@ const router =Router();
 
 router.get('/getuser',userController.getAllUsers);
 router.post("/getuserById",auth,userController.profile);
+router.post("/block",auth,userController.blockeUser);
 router.put("/updateuser",auth,userController.updateUser);
 router.delete("/deleteuser",auth,userController.deleteUser);
 

@@ -32,3 +32,8 @@ export const updateUser = asyncHandler(async (req, res, next) => {
     return res.status(200).json({ message: "Done", user: updatedUser })
 })
 
+export const blockeUser = asyncHandler(async (req, res, next) => {
+  const block = await userModel.findOneAndUpdate({ _id: req.user._id},{blocked:true },{new:true})
+  return res.status(200).json({ message: "User blocked", user: block })
+})
+
